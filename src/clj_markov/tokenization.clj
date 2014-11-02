@@ -99,9 +99,3 @@
 (defn tokenize-file
   [filename]
   (tokenize (slurp filename)))
-
-(comment
-  (let [md-tokens (tokenize-file "texts/moby-dick.txt")]
-    (take 100 md-tokens)
-    )
-  )
