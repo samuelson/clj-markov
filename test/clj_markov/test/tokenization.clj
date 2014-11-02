@@ -17,7 +17,6 @@
   (testing "tokenization character class regexes"
     (let [word-character? (regex-predicate word-character)
           punctuation? (regex-predicate punctuation)
-          word-punctuation? (regex-predicate word-punctuation)
           whitespace? (regex-predicate whitespace)]
       (is (word-character? \a))
       (is (word-character? \z))
@@ -46,12 +45,6 @@
       (is (not (punctuation? \space)))
       (is (not (punctuation? "x!")))
 
-      (is (word-punctuation? \'))
-      (is (not (word-punctuation? \c)))
-      (is (not (word-punctuation? \7)))
-      (is (not (word-punctuation? \newline)))
-      (is (not (word-punctuation? "f'")))
-
       (is (whitespace? \space))
       (is (whitespace? \tab))
       (is (whitespace? \newline))
@@ -78,6 +71,11 @@
     (testing "tokenizes words and punctuation marks seperately"
       (let [input "\"Get out!\" I said to him, curtly."]
         (is (= ["\"" "Get" "out" "!" "\"" "I" "said" "to" "him" "," "curtly" "."]
+               (tokenize input)))))
+
+    (testing "tokenizes em-dashes seperately"
+      (let [input "this--surely not unusual--construction should be allowed"]
+        (is (= ["this" "--" "surely" "not" "unusual" "--" "construction" "should" "be" "allowed"]
                (tokenize input)))))
 
     (testing "doesn't tokenize an apostrophe within a word as punctuation"

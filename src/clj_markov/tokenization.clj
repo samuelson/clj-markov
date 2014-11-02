@@ -42,7 +42,6 @@
 ;;
 
 (def word-character #"[a-zA-Z0-9-_]")
-(def word-punctuation #"'")
 (def punctuation #"['\",.:;!?\[\]\{\}\(\)]")
 (def whitespace #"(?m)\s")
 
@@ -58,6 +57,10 @@
   (let [[_ word apostrophe] (re-find #"([a-zA-Z0-9-_]+)(')" both)]
     (keep identity [word apostrophe])))
 
+(defn word-and-dash
+  [word-w-dash _]
+  [(re-find #"[a-zA-Z0-9_]+" word-w-dash) "--"])
+
 (def ^:private token-machine
   (fsm-seq
     [[:whitespace
@@ -65,16 +68,21 @@
       punctuation -> {:emit char-as-token} :whitespace
       _ -> :whitespace]
      [:word
+      #"'" -> {:action add-to-token} :apostrophe-in-word
+      #"-" -> {:action add-to-token} :word-or-em-dash-start
       word-character -> {:action add-to-token} :word
-      word-punctuation -> {:action add-to-token} :apostrophe-in-word
       whitespace -> {:emit current-token, :action reset-token} :whitespace
       punctuation -> {:emit current-token, :action reset-token-with-input} :punctuation
       _ -> {:emit current-token, :action reset-token} :whitespace]
      [:apostrophe-in-word
       word-character -> {:action add-to-token} :word
-      whitespace -> {:emit word-and-apostrophe, :action reset-token} :whitespace
       punctuation -> {:emit word-and-apostrophe, :action reset-token} :punctuation
       _ -> {:emit word-and-apostrophe, :action reset-token} :whitespace]
+     [:word-or-em-dash-start
+      #"-" -> {:emit word-and-dash, :action reset-token} :whitespace
+      word-character -> {:action add-to-token} :word
+      punctuation -> {:emit current-token, :action reset-token} :punctuation
+      _ -> {:emit current-token, :action reset-token} :whitespace]
      [:punctuation
       word-character -> {:emit char-as-token} :word
       whitespace -> {:emit current-token, :action reset-token} :whitespace
@@ -91,3 +99,9 @@
 (defn tokenize-file
   [filename]
   (tokenize (slurp filename)))
+
+(comment
+  (let [md-tokens (tokenize-file "texts/moby-dick.txt")]
+    (take 100 md-tokens)
+    )
+  )
