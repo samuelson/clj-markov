@@ -1,8 +1,7 @@
 (ns clj-markov.test.tokenization
   (:require [clojure.core.match :refer [match]]
             [clojure.test :refer :all]
-            [clj-markov.tokenization :refer :all]
-            :reload-all))
+            [clj-markov.tokenization :refer :all]))
 
 (deftest regex-match-extension
   (testing "clojure.core.match/match matches regexes against characters"

@@ -68,8 +68,8 @@
       punctuation -> {:emit char-as-token} :whitespace
       _ -> :whitespace]
      [:word
-      #"'" -> {:action add-to-token} :apostrophe-in-word
-      #"-" -> {:action add-to-token} :word-or-em-dash-start
+      \' -> {:action add-to-token} :apostrophe-in-word
+      \- -> {:action add-to-token} :word-or-em-dash-start
       word-character -> {:action add-to-token} :word
       whitespace -> {:emit current-token, :action reset-token} :whitespace
       punctuation -> {:emit current-token, :action reset-token-with-input} :punctuation
@@ -79,7 +79,7 @@
       punctuation -> {:emit word-and-apostrophe, :action reset-token} :punctuation
       _ -> {:emit word-and-apostrophe, :action reset-token} :whitespace]
      [:word-or-em-dash-start
-      #"-" -> {:emit word-and-dash, :action reset-token} :whitespace
+      \- -> {:emit word-and-dash, :action reset-token} :whitespace
       word-character -> {:action add-to-token} :word
       punctuation -> {:emit current-token, :action reset-token} :punctuation
       _ -> {:emit current-token, :action reset-token} :whitespace]
