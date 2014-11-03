@@ -1,4 +1,5 @@
-(ns clj-markov.generation)
+(ns clj-markov.generation
+  (:require [clj-markov.training :refer [shift-and-append]]))
 
 (defn generate
   [chain amount]
