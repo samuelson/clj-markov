@@ -11,6 +11,7 @@
                       "." (str %1 %2 "\n") 
                       (",",";",":",")") (str %1 %2) 
                       (str %1 " " %2)) 
+                      chain-output)))
 
 (defn supernatural-summaries [] (tokenize-file "texts/supernatural.txt"))
 
