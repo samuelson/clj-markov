@@ -7,7 +7,10 @@
   "Obviously needs some work, as currently all whitespace is destroyed in the
   tokenization process."
   [chain-output]
-  (println (reduce #(str %1 " " %2) chain-output)))
+  (println (reduce #(case %2 
+                      "." (str %1 %2 "\n") 
+                      (",",";",":",")") (str %1 %2) 
+                      (str %1 " " %2)) 
 
 (defn supernatural-summaries [] (tokenize-file "texts/supernatural.txt"))
 
